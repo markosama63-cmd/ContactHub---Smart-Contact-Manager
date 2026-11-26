@@ -11,25 +11,23 @@ var contactModal = document.getElementById("contactModal");
 var addbtn = document.getElementById("addbtn");
 var updatebtn = document.getElementById("updatebtn");
 var search = document.getElementById("search");
-var totalValue=document.getElementById('totalValue')
-var totalFavorite=document.getElementById('totalFavorite')
-var  totalEmergency=document.getElementById('totalEmergency')
-var  favoritesList=document.getElementById('favoritesList')
-var emergencyList=document.getElementById('emergencyList')
+var totalValue = document.getElementById("totalValue");
+var totalFavorite = document.getElementById("totalFavorite");
+var totalEmergency = document.getElementById("totalEmergency");
+var favoritesList = document.getElementById("favoritesList");
+var emergencyList = document.getElementById("emergencyList");
 var previewImg = document.getElementById("previewImg");
 var fileName = document.getElementById("fileName");
 
 var allPersonal;
 allPersonal = JSON.parse(localStorage.getItem("allpersonal")) || [];
 displayPersonalInfo();
-updateStats()
-changeFavoriteList()
+updateStats();
+changeFavoriteList();
 function addPersonaInfo() {
-    
-   if(!checkForm()){
+  if (!checkForm()) {
     return;
-    
-   }
+  }
   var personal = {
     Name: fullName.value,
     Number: phoneNumber.value,
@@ -37,17 +35,17 @@ function addPersonaInfo() {
     Address: address.value,
     Category: group.value,
     Description: description.value,
-    Image:photoInput.files[0]?.name ||"avatar-1.jpg",
-    
+    Image: photoInput.files[0]?.name || "avatar-1.jpg",
+
     Condition: getOptions(),
   };
   allPersonal.push(personal);
 
   displayPersonalInfo();
-  updateStats()
+  updateStats();
   handleLocalStorage();
-  
-   clearInputs();
+
+  clearInputs();
   closeAddEdit();
   Swal.fire({
     title: "Added",
@@ -55,7 +53,6 @@ function addPersonaInfo() {
     draggable: true,
   });
   console.log(allPersonal);
- 
 }
 
 function displayPersonalInfo(list = allPersonal, searchTerm) {
@@ -112,9 +109,8 @@ function deletePersonalInfo(index) {
   console.log(index);
   allPersonal.splice(index, 1);
   displayPersonalInfo();
-  updateStats()
+  updateStats();
   handleLocalStorage();
-  
 
   Swal.fire({
     title: "Deleted",
@@ -136,7 +132,6 @@ function updateData(index) {
   description.value = allPersonal[index].Description;
   fileName.innerHTML = allPersonal[index].Image;
 
-
   for (let i = 0; i < options.length; i++) {
     if (allPersonal[index].Condition.includes(options[i].value)) {
       options[i].checked = true;
@@ -146,7 +141,7 @@ function updateData(index) {
 function onUpdateData() {
   if (!checkForm()) {
     return;
-}
+  }
   var personal = {
     Name: fullName.value,
     Number: phoneNumber.value,
@@ -154,15 +149,15 @@ function onUpdateData() {
     Address: address.value,
     Category: group.value,
     Description: description.value,
-    Image:photoInput.files[0]?.name || allPersonal[currentIndex].Image,
-    
+    Image: photoInput.files[0]?.name || allPersonal[currentIndex].Image,
+
     Condition: getOptions(),
   };
   allPersonal.splice(currentIndex, 1, personal);
   displayPersonalInfo();
   handleLocalStorage();
   changeToggle();
-  updateStats()
+  updateStats();
   clearInputs();
   closeAddEdit();
   Swal.fire({
@@ -182,8 +177,8 @@ function getOptions() {
 }
 function openAddEdit() {
   contactModal.classList.remove("d-none");
-  clearInputs()
-  changeToggle()
+  clearInputs();
+  changeToggle();
 }
 function closeAddEdit() {
   contactModal.classList.add("d-none");
@@ -196,7 +191,7 @@ function clearInputs() {
   group.value = "";
   description.value = "";
   photoInput.value = "";
-   fileName.innerHTML = "";
+  fileName.innerHTML = "";
   for (let i = 0; i < options.length; i++) {
     options[i].checked = false;
   }
@@ -216,7 +211,9 @@ function handleLocalStorage() {
 function searchInput() {
   var newArr = [];
   for (let i = 0; i < allPersonal.length; i++) {
-    if (allPersonal[i].Name.toLowerCase().includes(search.value.toLowerCase())) {
+    if (
+      allPersonal[i].Name.toLowerCase().includes(search.value.toLowerCase())
+    ) {
       newArr.push(allPersonal[i]);
     }
   }
@@ -228,7 +225,7 @@ var regex = {
   Description: /^[a-zA-Z0-9 ]{3,15}$/,
   Image: "",
   phoneNumber: /^01[0125][0-9]{8}$/,
-  Email:/^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/,
+  Email: /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/,
   Address: /^[a-zA-Z0-9]{5,15}$/,
 };
 function validate(regexParam, inputName) {
@@ -236,51 +233,47 @@ function validate(regexParam, inputName) {
     inputName.nextElementSibling.classList.add("d-none");
     inputName.classList.add("is-valid");
     inputName.classList.remove("is-invalid");
-    return true
+    return true;
   } else {
     inputName.nextElementSibling.classList.remove("d-none");
     inputName.classList.remove("is-valid");
     inputName.classList.add("is-invalid");
-    return false
+    return false;
   }
 }
-function changeTotalValue(){
-  totalValue.innerHTML=allPersonal.length
+function changeTotalValue() {
+  totalValue.innerHTML = allPersonal.length;
 }
 
-function ChangeFavoriteValue(){
-  var counter=0
+function ChangeFavoriteValue() {
+  var counter = 0;
   for (let i = 0; i < allPersonal.length; i++) {
-    if(allPersonal[i].Condition.includes("Favorite")){
-      counter++
+    if (allPersonal[i].Condition.includes("Favorite")) {
+      counter++;
     }
-    
   }
-totalFavorite.innerHTML=counter
+  totalFavorite.innerHTML = counter;
 }
-function ChangeEmergencyValue(){
-  var counter=0
+function ChangeEmergencyValue() {
+  var counter = 0;
   for (let i = 0; i < allPersonal.length; i++) {
-    if(allPersonal[i].Condition.includes("Emergency")){
-      counter++
+    if (allPersonal[i].Condition.includes("Emergency")) {
+      counter++;
     }
-    
   }
-totalEmergency.innerHTML=counter
+  totalEmergency.innerHTML = counter;
 }
-function updateStats(){
-   changeTotalValue();
+function updateStats() {
+  changeTotalValue();
   ChangeFavoriteValue();
   ChangeEmergencyValue();
-  changeFavoriteList()
-  changeEmergencyList()
+  changeFavoriteList();
+  changeEmergencyList();
 }
-function changeFavoriteList(){
-
+function changeFavoriteList() {
   var temp = "";
 
   for (let i = 0; i < allPersonal.length; i++) {
-    
     if (allPersonal[i].Condition.includes("Favorite")) {
       temp += `
         <div class="side-item">
@@ -298,25 +291,32 @@ function changeFavoriteList(){
 
   // if nobody is a favorite, show the empty message
   if (temp === "") {
-     temp=`
+    temp = `
       <div class="side-body d-flex align-items-center justify-content-center">
             <span class="empty-text">No favorites yet</span>
            
           </div>
-     `
+     `;
   }
 
   favoritesList.innerHTML = temp;
 }
 function getInitials(name) {
-  return name.trim().split(" ").map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase();
+  return name
+    .trim()
+    .split(" ")
+    .map(function (w) {
+      return w[0];
+    })
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 }
 
-function changeEmergencyList(){
+function changeEmergencyList() {
   var temp = "";
 
   for (let i = 0; i < allPersonal.length; i++) {
-    
     if (allPersonal[i].Condition.includes("Emergency")) {
       temp += `
         <div class="side-item">
@@ -334,60 +334,43 @@ function changeEmergencyList(){
 
   // if nobody is a favorite, show the empty message
   if (temp === "") {
-     temp=`
+    temp = `
        <div class="side-body d-flex align-items-center justify-content-center">
             <span class="empty-text">No emergency contacts</span>
           </div>
-     `
+     `;
   }
 
   emergencyList.innerHTML = temp;
 }
 
 function checkForm() {
-    var isNameValid = validate("Name", fullName);
-    var isPhoneValid = validate("phoneNumber", phoneNumber);
-    var isEmailValid = validate("Email", email);
-    var isAddressValid = validate("Address", address);
-    var isDescriptionValid = validate("Description", description);
+  var isNameValid = validate("Name", fullName);
+  var isPhoneValid = validate("phoneNumber", phoneNumber);
+  var isEmailValid = validate("Email", email);
+  var isAddressValid = validate("Address", address);
+  var isDescriptionValid = validate("Description", description);
 
-    return (
-        isNameValid &&
-        isPhoneValid &&
-        isEmailValid &&
-        isAddressValid &&
-        isDescriptionValid
-    );
+  return (
+    isNameValid &&
+    isPhoneValid &&
+    isEmailValid &&
+    isAddressValid &&
+    isDescriptionValid
+  );
 }
-function favoriteToggle(index){
-if(allPersonal[index].Condition.includes('Favorite')){
+function favoriteToggle(index) {
+  if (allPersonal[index].Condition.includes("Favorite")) {
+    allPersonal[index].Condition.shift();
+  } else allPersonal[index].Condition.unshift("Favorite");
 
-  allPersonal[index].Condition.shift()
+  changeFavoriteList();
+  ChangeFavoriteValue();
 }
-else
-allPersonal[index].Condition.unshift('Favorite')
-
-changeFavoriteList()
-ChangeFavoriteValue()
-
-
+function emergencyToggle(index) {
+  if (allPersonal[index].Condition.includes("Emergency")) {
+    allPersonal[index].Condition.pop();
+  } else allPersonal[index].Condition.push("Emergency");
+  changeEmergencyList();
+  ChangeEmergencyValue();
 }
-function emergencyToggle(index){
-if(allPersonal[index].Condition.includes('Emergency')){
-
-  allPersonal[index].Condition.pop()
-}
-else
-allPersonal[index].Condition.push('Emergency')
- changeEmergencyList()
-ChangeEmergencyValue()
-
-
-
-}
-
-
-
-
-
-  
